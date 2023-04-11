@@ -98,8 +98,14 @@ under the License.
       <url>http://0.0.0.0/</url>
       <blocked>true</blocked>
     </mirror>
+    <mirror>
+      <id>confluent</id>
+      <mirrorOf>confluent</mirrorOf>
+      <name>Nexus public mirror</name>
+      <url>http://packages.confluent.io/maven/</url>
+    </mirror>
   </mirrors>
-
+  
   <!-- profiles
    | This is a list of profiles which can be activated in a variety of ways, and which can modify
    | the build process. Profiles provided in the settings.xml are intended to provide local machine-
