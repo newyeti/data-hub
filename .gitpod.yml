@@ -1,0 +1,5 @@
+tasks:
+  - init: make build-image-only
+
+image:
+  file: .gitpod.Dockerfile
