@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Team extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 4969015818066003275L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Team\",\"namespace\":\"com.newyeti.datahub.puller.avro.schema\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"default\":-1},{\"name\":\"name\",\"type\":\"string\",\"default\":null}]}");
+  private static final long serialVersionUID = 5936046180500006460L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Team\",\"namespace\":\"com.newyeti.datahub.puller.avro.schema\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"default\":-1},{\"name\":\"name\",\"type\":[\"null\",\"string\"],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();

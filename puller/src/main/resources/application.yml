@@ -3,8 +3,9 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers:
-    - broker1:9092
+    bootstrap-servers: broker1:9092
+    template:
+      default-topic: "datahub.team.avro.topic.v1"
     producer:
       key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
       value-serializer: "io.confluent.kafka.serializers.KafkaAvroSerializer"
