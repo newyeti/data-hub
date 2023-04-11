@@ -10,10 +10,10 @@
 	</parent>
 
 	<groupId>com.newyeti.datahub</groupId>
-	<artifactId>producer</artifactId>
+	<artifactId>puller</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>producer</name>
-	<description>Avro message producer</description>
+	<name>puller</name>
+	<description>PUlls data from internet</description>
 
 	<dependencies>
 		<dependency>

@@ -26,7 +26,7 @@
   </properties>
 
   <modules>
-    <module>producer</module>
+    <module>puller</module>
   </modules>
 
   <dependencyManagement>
