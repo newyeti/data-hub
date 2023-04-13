@@ -3,7 +3,7 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: broker1:9092
+    bootstrap-servers: broker-1:9092
     template:
       default-topic: "datahub.team.avro.topic.v1"
     producer:
@@ -12,7 +12,7 @@ spring:
       properties:
         schema:
           registry:
-            url: http://broker1:8081
+            url: http://schema-registry:8081
 
 avro:
   topic:

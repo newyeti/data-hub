@@ -9,7 +9,7 @@ if [[ ! -z $CONFIG_SERVER_URI ]]; then
     echo "Config server port is not set. Using default port"
     $CONFIG_SERVER_PORT=$defaultPort
     $CONFIG_SERVER_TIMEOUT=$defaultTimeout
-
+  fi
   sh ./app/wait-for-it.sh -u $CONFIG_SERVER_URI -p $CONFIG_SERVER_PORT -e /actuator -t $CONFIG_SERVER_TIMEOUT -s
 else 
   echo "Config server not provided."
