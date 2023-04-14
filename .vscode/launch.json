@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-PullerApplication<puller>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.newyeti.datahub.puller.PullerApplication",
+      "projectName": "puller",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
