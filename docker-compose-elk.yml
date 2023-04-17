@@ -7,15 +7,15 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+      - 4200:9200
     restart: always
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
 
   kibana:
     depends_on:
@@ -29,3 +29,9 @@ services:
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+volumes:
+  elasticsearch-data:
+    driver: local
+  kibana-data:
+    driver: local
