@@ -20,3 +20,10 @@ build-image-only:
 #Build image and push to registry
 build-image:
 	mvn -s maven_settings.xml clean compile jib:build
+
+build-image-only-local:
+  mvn clean compile jib:dockerBuild
+
+#Build image and push to registry
+build-image-local:
+	mvn clean compile jib:build
