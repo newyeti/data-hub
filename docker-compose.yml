@@ -30,7 +30,6 @@ services:
       KAFKA_SCHEMA_REGISTRY_URL: "schema-registry:8081"
     networks:
       - infra-network
-      - app-network
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.3.2
@@ -43,7 +42,6 @@ services:
       - zookeeper
     networks:
       - infra-network
-      - app-network
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "broker-1:9092"
@@ -86,7 +84,7 @@ services:
       - infra-network
     environment:
       SCHEMAREGISTRY_URL: "http://schema-registry:8081"
-
+  
   puller-service:
     image: sachindramaharjan/datahub-puller
     container_name: puller-service
@@ -95,6 +93,7 @@ services:
       - 6000:6000
     networks:
       - app-network
+      - infra-network
     depends_on:
       - broker-1
       - schema-registry
@@ -104,3 +103,4 @@ networks:
     driver: bridge
   app-network:
     driver: bridge
+    
