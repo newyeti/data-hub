@@ -129,8 +129,8 @@ services:
       - infra-network
 
   discovery-server:
-    container_name: newyeti-discovery-server
-    image: sachindramaharjan/newyeti-discovery-server:latest
+    container_name: datahub-discovery-server
+    image: sachindramaharjan/datahub-discovery-server:latest
     pull_policy: always
     ports:
       - 8761:8761
@@ -140,8 +140,8 @@ services:
       - zipkin
   
   config-server:
-    container_name: newyeti-config-server
-    image: sachindramaharjan/newyeti-config-server:latest
+    container_name: datahub-config-server
+    image: sachindramaharjan/datahub-config-server:latest
     pull_policy: always
     ports:
       - 9091:9091
@@ -151,8 +151,8 @@ services:
       - infra-network
 
   api-gateway:
-    container_name: newyeti-api-gateway
-    image: sachindramaharjan/newyeti-api-gateway:latest
+    container_name: datahub-api-gateway
+    image: sachindramaharjan/datahub-api-gateway:latest
     ports:
       - 8181:8080
     expose:
