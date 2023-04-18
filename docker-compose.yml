@@ -10,10 +10,10 @@ services:
     networks:
       - infra-network
 
-  broker1:
+  broker-1:
     image: confluentinc/cp-kafka:7.3.2
-    container_name: broker1
-    hostname: broker1
+    container_name: broker-1
+    hostname: broker-1
     ports:
       - 9092:9092
     depends_on:
@@ -22,16 +22,168 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9092,PLAINTEXT_INTERNAL://broker1:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:9092,PLAINTEXT_INTERNAL://broker-1:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_SCHEMA_REGISTRY_URL: "schema-registry:8081"
     networks:
       - infra-network
 
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.3.2
+    container_name: schema-registry
+    hostname: schema-registry
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - zookeeper
+    networks:
+      - infra-network
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "broker-1:9092"
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+      # SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      # SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: 'GET,POST,PUT,OPTIONS'
+  
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:7.3.2
+    hostname: control-center
+    container_name: control-center
+    depends_on:
+      - zookeeper
+      - broker-1
+      - schema-registry
+    ports:
+      - "9021:9021"
+    networks:
+      - infra-network
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker-1:29092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+  
+  schema-registry-ui:
+    image: landoop/schema-registry-ui
+    hostname: schema-registry-ui
+    depends_on:
+      - broker-1
+      - schema-registry
+    ports:
+      - "8082:8000"
+    networks:
+      - infra-network
+    environment:
+      SCHEMAREGISTRY_URL: "http://schema-registry:8081"
 
+  keycloak-mysql:
+    container_name: keyclock-mysql
+    image: mysql:5.7.41-debian
+    volumes:
+      - ./data/mysql-keyclock:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root 
+      - MYSQL_DATABASE=keyclock
+      - MYSQL_USER=keyclock
+      - MYSQL_PASSWORD=password
+    restart: always
+    networks:
+      - infra-network
+  
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:20.0.3
+    command: ["start-dev", "--import-realm"]
+    environment:
+      - DB_VENDOR=MYSQL 
+      - DB_ADDR=mysql
+      - DB_DATABASE=keyclock
+      - DB_USER=keyclock
+      - DB_PASSWORD=password
+      - KEYCLOAK_ADMIN=admin 
+      - KEYCLOAK_ADMIN_PASSWORD=admin 
+    ports:
+      - 8080:8080
+    volumes:
+      - ./realms:/opt/keycloak/data/import
+    depends_on:
+      - keycloak-mysql
+    networks:
+      - infra-network
+  
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - infra-network
+
+  discovery-server:
+    container_name: datahub-discovery-server
+    image: sachindramaharjan/datahub-discovery-server:latest
+    pull_policy: always
+    ports:
+      - 8761:8761
+    networks:
+      - infra-network
+    depends_on:
+      - zipkin
+  
+  config-server:
+    container_name: datahub-config-server
+    image: sachindramaharjan/datahub-config-server:latest
+    pull_policy: always
+    ports:
+      - 9091:9091
+    depends_on:
+      - discovery-server
+    networks:
+      - infra-network
+
+  api-gateway:
+    container_name: datahub-api-gateway
+    image: sachindramaharjan/datahub-api-gateway:latest
+    ports:
+      - 8181:8080
+    expose:
+      - 8181
+    environment:
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+    pull_policy: always
+    networks:
+      - infra-network
+    depends_on:
+      - zipkin
+      - discovery-server
+      - config-server
+      - keycloak
+
+  puller-service:
+    image: sachindramaharjan/datahub-puller
+    container_name: puller-service
+    pull_policy: always
+    ports:
+      - 6000:6000
+    networks:
+      - app-network
+      - infra-network
+    depends_on:
+      - broker-1
+      - schema-registry
 
 networks:
   infra-network:
     driver: bridge
+  app-network:
+    driver: bridge
+    

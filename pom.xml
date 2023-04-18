@@ -21,11 +21,16 @@
     <micrometer-tracing.version>1.0.3</micrometer-tracing.version>
     <io.opentelemetry.version>0.14.0</io.opentelemetry.version>
     <io.confluent.version>5.3.0</io.confluent.version>
+    <schema-registry.version>7.3.3</schema-registry.version>
     <apache.avro.version>1.11.1</apache.avro.version>
+    <avro-maven-plugin.version>1.8.2</avro-maven-plugin.version>
   </properties>
 
   <modules>
-    <module>producer</module>
+    <module>api-gateway</module>
+    <module>config-server</module>
+    <module>discovery-server</module>
+    <module>puller</module>
   </modules>
 
   <dependencyManagement>
@@ -56,24 +61,22 @@
         <artifactId>bom</artifactId>
         <version>${io.opentelemetry.version}</version>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.confluent</groupId>
         <artifactId>kafka-avro-serializer</artifactId>
         <version>${io.confluent.version}</version>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.confluent</groupId>
         <artifactId>kafka-schema-registry-client</artifactId>
         <version>${io.confluent.version}</version>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro</artifactId>
         <version>${apache.avro.version}</version>
-        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -89,7 +92,15 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-</repositories>
+  </repositories>
+
+  <pluginRepositories>
+      <pluginRepository> 
+          <id>confluent</id> 
+          <name>Confluent</name> 
+          <url>https://packages.confluent.io/maven/</url> 
+      </pluginRepository> 
+  </pluginRepositories>
 
   <build>
     <plugins>
@@ -114,11 +125,10 @@
             <image>eclipse-temurin:19.0.2_7-jre-alpine</image>
           </from>
           <to>
-            <image>registry.hub.docker.com/sachindramaharjan/data-hub-${project.artifactId}</image>
+            <image>registry.hub.docker.com/sachindramaharjan/datahub-${project.artifactId}</image>
           </to>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
 </project>
