@@ -2,6 +2,10 @@ server:
   port: 6000
 
 spring:
+  application:
+    name: PULLER-SERVICE
+  config:
+    import: "configserver:http://config-server:9091"
   kafka:
     bootstrap-servers: broker-1:9092
     template:

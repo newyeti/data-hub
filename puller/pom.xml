@@ -27,6 +27,16 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
@@ -97,9 +107,9 @@
 					<container>
 						<environment>
 							<JAVA_OPTS>-Xms512m -Xmx1024m</JAVA_OPTS>
-							<!-- <CONFIG_SERVER_URI>http://config-server</CONFIG_SERVER_URI>
+							<CONFIG_SERVER_URI>http://config-server</CONFIG_SERVER_URI>
 							<CONFIG_SERVER_PORT>9091</CONFIG_SERVER_PORT>
-							<CONFIG_SERVER_TIMEOUT>300</CONFIG_SERVER_TIMEOUT> -->
+							<CONFIG_SERVER_TIMEOUT>300</CONFIG_SERVER_TIMEOUT>
 							<ENTRYPOINT>com.newyeti.datahub.puller.PullerApplication</ENTRYPOINT>
 						</environment>
 						<entrypoint>
